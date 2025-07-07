@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getUserSession } from '@/lib/session'
+import type { Leaderboard } from '@/lib/types'
 
 // POST /api/game/submit
 export async function POST(req: NextRequest) {
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     // 3.5. Update user's rank based on leaderboard
     const leaderboard = await prisma.leaderboard.findMany({ orderBy: { wpm: 'desc' } })
-    const userRank = leaderboard.findIndex(entry => entry.userId === userId) + 1
+    const userRank = leaderboard.findIndex((entry: Leaderboard) => entry.userId === userId) + 1
     await prisma.user.update({
       where: { id: userId },
       data: {
