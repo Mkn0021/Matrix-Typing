@@ -1,6 +1,7 @@
 // GET /api/leaderboard/weekly
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { LeaderboardEntry } from '@/lib/types';
 
 export async function GET() {
   try {
@@ -26,7 +27,8 @@ export async function GET() {
         },
       },
     });
-    const scores = scoresRaw.map((entry, i) => ({
+    type Entry = typeof scoresRaw[number];
+    const scores: LeaderboardEntry[] = scoresRaw.map((entry: Entry, i: number) => ({
       ...entry,
       rank: i + 1,
       user: {
@@ -34,7 +36,7 @@ export async function GET() {
         streak: entry.user.userStats?.streak ?? 0,
         totalTests: entry.user.userStats?.totalTests ?? 0,
       },
-    }));
+    })) as LeaderboardEntry[];
     return NextResponse.json({ scores });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch weekly leaderboard', details: error }, { status: 500 });

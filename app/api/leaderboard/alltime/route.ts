@@ -21,7 +21,8 @@ export async function GET(): Promise<NextResponse<{ scores: LeaderboardEntry[] }
       },
     });
     // Add rank and flatten streak/totalTests
-    const scores: LeaderboardEntry[] = scoresRaw.map((entry, i) => ({
+    type Entry = typeof scoresRaw[number];
+    const scores: LeaderboardEntry[] = scoresRaw.map((entry: Entry, i: number) => ({
       ...entry,
       rank: i + 1,
       user: {
